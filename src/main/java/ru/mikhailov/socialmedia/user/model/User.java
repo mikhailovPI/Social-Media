@@ -1,7 +1,10 @@
 package ru.mikhailov.socialmedia.user.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.util.HashSet;
@@ -18,11 +21,13 @@ public class User {
     public static final String SCHEMA_TABLE = "public";
     public static final String TABLE_USERS = "users";
     public static final String TABLE_USERS_ROLES = "users_roles";
+    public static final String TABLE_USERS_FRIENDS = "users_friends";
     public static final String USERS_ID = "user_id";
     public static final String USERS_NAME = "user_name";
     public static final String USERS_PASSWORD = "user_password";
     public static final String USERS_EMAIL = "email";
     public static final String ROLE_ID = "role_id";
+    public static final String FRIENDS = "friends";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,5 +47,12 @@ public class User {
     @JoinTable(name = TABLE_USERS_ROLES,
             joinColumns = @JoinColumn(name = USERS_ID),
             inverseJoinColumns = @JoinColumn(name = ROLE_ID))
-    private Set<Role> userRole = new HashSet<>();
+    Set<Role> userRole = new HashSet<>();
+
+    //@Column(name = FRIENDS)
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JoinTable(name = TABLE_USERS_FRIENDS,
+            joinColumns = @JoinColumn(name = USERS_ID),
+            inverseJoinColumns = @JoinColumn(name = USERS_ID))
+    Set<Long> friends = new HashSet<>();
 }
